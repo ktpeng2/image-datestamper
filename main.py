@@ -46,12 +46,12 @@ def modifyImages(imgDateDict, origTimeDict):
         #exif[orientation] using this to determine if landscape or portrait in my images
         #anything that isnt 1 is in portrait
 
-        h, w = im.size
+        xy = (0.99*im.width, 0.99*im.height)
 
         draw = ImageDraw.Draw(im)
         text = imgDateDict[file][0] + " " + imgDateDict[file][1]
         font1 = ImageFont.truetype('RobotoMono-Regular.ttf', 125)
-        draw.text((3400,3400), text, font=font1, fill='yellow')
+        draw.text(xy, text, anchor='rb', font=font1, fill='yellow')
         im.save(path)
         cnt += 1
         print('[%d / %d]' %(cnt, tot))
@@ -69,6 +69,7 @@ def main():
     print('\nCopying files over to new directory to not modify original images')
     origTimeDict = {}
     for i in entries:
+        print(f'%d/%d' %(cnt, len(entries)))
         path = dirPath+"\\"+i
         #copying images to newly created folder
         shutil.copy(path, './datestamped')
@@ -82,6 +83,7 @@ def main():
         #inserting elements into dictionary conisting of [imgName] = [origImgMetaData]
         st = os.stat(path)
         origTimeDict[i] = st
+        cnt += 1
 
     print('All files copied over, preparing to edit')
     modifyImages(imgDateDict, origTimeDict)
